@@ -114,11 +114,12 @@ export default {
       this.dialog = true;
     },
     addTask() {
-      if (this.newTask.name.trim() && this.newTask.dueTime.trim()) {
+      if(this.validateName()){
         this.tasks.push({
           ...this.newTask,
           id: Date.now(),
-        });
+        }),
+
         this.resetNewTask();
         this.dialog = false;
       }
