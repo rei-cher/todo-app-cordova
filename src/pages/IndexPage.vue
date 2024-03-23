@@ -33,10 +33,15 @@
           <q-space/>
         </q-bar>
         <q-card-section class="q-pt-none">
-          <div class="text-h6">{{ selectedTask?.name }}</div>
-          <p>{{ selectedTask?.description }}</p>
-          <div>Due Time: {{ selectedTask?.dueTime }}</div>
+          <div class="text-h6" style="margin-bottom: 10px">{{ selectedTask?.name }}</div>
+          <p v-html="formatDescription(selectedTask?.description)"></p>
+          <div v-if="selectedTask?.dueTime" style="margin-bottom: 20px;">Due Time: {{ selectedTask?.dueTime }}</div>
         </q-card-section>
+
+        <q-card-actions align="around">
+          <q-btn flat label="Completed" color="primary" @click="removeTask(selectedTask.id); closeTaskDialog();"/>
+          <q-btn flat label="Close" color="primary" @click="closeTaskDialog();"/>
+        </q-card-actions>
       </q-card>
     </q-dialog>
     
@@ -115,13 +120,30 @@ export default {
     },
     addTask() {
       if(this.validateName()){
-        this.tasks.push({
+        const newTaskID = Date.now();
+
+        const newTask = {
           ...this.newTask,
-          id: Date.now(),
-        }),
+          id: newTaskID
+        };
+
+        // this.tasks.push({
+        //   ...this.newTask,
+        //   id: newTaskID,
+        // }),
+
+        this.tasks.push(newTask);
 
         this.resetNewTask();
         this.dialog = false;
+
+        navigator.notification.alert(
+          'Task has been added',
+          this.scheduleNotification(newTaskID, newTask.name, newTask.description, newTask.dueTime),
+          `${newTask.name} is added`,
+          'OK'
+          )
+          
       }
     },
     removeTask(id) {
@@ -146,6 +168,22 @@ export default {
     closeTaskDialog(){
       this.taskDialog = false;
       this.selectedTask = null;
+    },
+    scheduleNotification(id, title, text, dueTime){
+      if(dueTime){
+        if(cordova.plugins && cordova.plugins.notification){
+          cordova.plugins.notification.local.schedule({
+            id: id, 
+            title: `Task Added: ${title}`,
+            text: text,
+            trigger: {at: new Date(new Date().getTime() + 1000)},
+            foreground: true
+          });
+        }
+      }
+    },
+    formatDescription(description){
+      return description.replace(/\n/g, '<br>');
     }
   },
 };
