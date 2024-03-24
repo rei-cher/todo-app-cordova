@@ -1,0 +1,8 @@
+{
+  "appId": "com.example.app",
+  "appName": "todo-app",
+  "webDir": "dist/spa",
+  "server": {
+    "androidScheme": "https"
+  }
+}
