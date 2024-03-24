@@ -3,9 +3,11 @@ module.exports = {
   // This option interrupts the configuration hierarchy at this file
   // Remove this if you have an higher level ESLint config file (it usually happens into a monorepos)
   root: true,
-
+  parser: 'vue-eslint-parser',
   parserOptions: {
+    parser: "@typescript-eslint/parser",
     ecmaVersion: 2021, // Allows for the parsing of modern ECMAScript features
+    sourceType: "module",
   },
 
   env: {
@@ -24,17 +26,19 @@ module.exports = {
     'plugin:vue/vue3-essential', // Priority A: Essential (Error Prevention)
     // 'plugin:vue/vue3-strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
     // 'plugin:vue/vue3-recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
-
+    'eslint:recommended',
+    '@vue/typescript/recommended', 
     // https://github.com/prettier/eslint-config-prettier#installation
     // usage with Prettier, provided by 'eslint-config-prettier'.
-    'prettier'
+    'prettier',
+    'plugin:@typescript-eslint/recommended',
   ],
 
   plugins: [
     // https://eslint.vuejs.org/user-guide/#why-doesn-t-it-work-on-vue-files
     // required to lint *.vue files
     'vue',
-    
+    '@typescript-eslint',
     // https://github.com/typescript-eslint/typescript-eslint/issues/389#issuecomment-509292674
     // Prettier has not been included as plugin to avoid performance impact
     // add it as an extension for your IDE
@@ -58,8 +62,13 @@ module.exports = {
   rules: {
     
     'prefer-promise-reject-errors': 'off',
-
+    "@typescript-eslint/no-var-requires": "off",
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
-  }
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+  },
+
+  ignorePatterns: ['node_modules/', 'android/'],
 }
